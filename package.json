@@ -1,6 +1,6 @@
 {
   "name": "@capgo/capacitor-pdf-generator",
-  "version": "7.0.1",
+  "version": "7.1.0",
   "description": "Generate PDF files from HTML strings or URLs on iOS and Android.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
