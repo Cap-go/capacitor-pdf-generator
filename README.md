@@ -42,6 +42,7 @@ if (result.type === 'base64') {
 
 * [`fromURL(...)`](#fromurl)
 * [`fromData(...)`](#fromdata)
+* [`getPluginVersion()`](#getpluginversion)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 
@@ -80,6 +81,19 @@ Generates a PDF from a raw HTML string.
 | **`options`** | <code><a href="#pdfgeneratorfromdataoptions">PdfGeneratorFromDataOptions</a></code> |
 
 **Returns:** <code>Promise&lt;<a href="#pdfgeneratorresult">PdfGeneratorResult</a>&gt;</code>
+
+--------------------
+
+
+### getPluginVersion()
+
+```typescript
+getPluginVersion() => Promise<{ version: string; }>
+```
+
+Get the native Capacitor plugin version
+
+**Returns:** <code>Promise&lt;{ version: string; }&gt;</code>
 
 --------------------
 
