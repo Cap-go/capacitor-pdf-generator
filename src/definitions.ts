@@ -61,4 +61,12 @@ export interface PdfGeneratorPlugin {
    * Generates a PDF from a raw HTML string.
    */
   fromData(options: PdfGeneratorFromDataOptions): Promise<PdfGeneratorResult>;
+
+  /**
+   * Get the native Capacitor plugin version
+   *
+   * @returns {Promise<{ id: string }>} an Promise with version for this device
+   * @throws An error if the something went wrong
+   */
+  getPluginVersion(): Promise<{ version: string }>;
 }

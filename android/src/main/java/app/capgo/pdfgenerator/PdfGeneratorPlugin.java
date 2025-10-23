@@ -29,6 +29,8 @@ import java.util.Locale;
 @CapacitorPlugin(name = "PdfGenerator")
 public class PdfGeneratorPlugin extends Plugin {
 
+    private final String PLUGIN_VERSION = "";
+
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final List<PdfGenerationTask> tasks = new ArrayList<>();
 
@@ -84,25 +86,21 @@ public class PdfGeneratorPlugin extends Plugin {
                 new CapgoPdfPrintUtils.Base64Callback() {
                     @Override
                     public void onSuccess(@NonNull String base64) {
-                        mainHandler.post(
-                            () -> {
-                                JSObject result = new JSObject();
-                                result.put("type", "base64");
-                                result.put("base64", base64);
-                                task.call.resolve(result);
-                                task.finish();
-                            }
-                        );
+                        mainHandler.post(() -> {
+                            JSObject result = new JSObject();
+                            result.put("type", "base64");
+                            result.put("base64", base64);
+                            task.call.resolve(result);
+                            task.finish();
+                        });
                     }
 
                     @Override
                     public void onError(@NonNull String message) {
-                        mainHandler.post(
-                            () -> {
-                                task.call.reject(message);
-                                task.finish();
-                            }
-                        );
+                        mainHandler.post(() -> {
+                            task.call.reject(message);
+                            task.finish();
+                        });
                     }
                 }
             );
@@ -121,12 +119,10 @@ public class PdfGeneratorPlugin extends Plugin {
 
                     @Override
                     public void onError(@NonNull String message) {
-                        mainHandler.post(
-                            () -> {
-                                task.call.reject(message);
-                                task.finish();
-                            }
-                        );
+                        mainHandler.post(() -> {
+                            task.call.reject(message);
+                            task.finish();
+                        });
                     }
                 }
             );
@@ -141,11 +137,7 @@ public class PdfGeneratorPlugin extends Plugin {
             return;
         }
 
-        Uri uri = FileProvider.getUriForFile(
-            getContext(),
-            getContext().getPackageName() + ".capgo.pdfgenerator.fileprovider",
-            file
-        );
+        Uri uri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".capgo.pdfgenerator.fileprovider", file);
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("application/pdf");
@@ -237,16 +229,14 @@ final class PdfGenerationTask extends WebViewClient {
             return;
         }
 
-        activity.runOnUiThread(
-            () -> {
-                webView = new WebView(plugin.getContext());
-                WebSettings settings = webView.getSettings();
-                settings.setJavaScriptEnabled(true);
-                settings.setDatabaseEnabled(true);
-                webView.setWebViewClient(this);
-                source.load(webView);
-            }
-        );
+        activity.runOnUiThread(() -> {
+            webView = new WebView(plugin.getContext());
+            WebSettings settings = webView.getSettings();
+            settings.setJavaScriptEnabled(true);
+            settings.setDatabaseEnabled(true);
+            webView.setWebViewClient(this);
+            source.load(webView);
+        });
     }
 
     void finish() {
@@ -256,17 +246,15 @@ final class PdfGenerationTask extends WebViewClient {
         finished = true;
         Activity activity = plugin.getActivity();
         if (activity != null) {
-            activity.runOnUiThread(
-                () -> {
-                    if (webView != null) {
-                        webView.stopLoading();
-                        webView.setWebViewClient(null);
-                        webView.destroy();
-                        webView = null;
-                    }
-                    plugin.removeTask(this);
+            activity.runOnUiThread(() -> {
+                if (webView != null) {
+                    webView.stopLoading();
+                    webView.setWebViewClient(null);
+                    webView.destroy();
+                    webView = null;
                 }
-            );
+                plugin.removeTask(this);
+            });
         } else {
             plugin.removeTask(this);
         }
@@ -377,5 +365,16 @@ final class PdfGeneratorOptions {
         String name = fileName;
         int dotIndex = name.lastIndexOf('.');
         return dotIndex > 0 ? name.substring(0, dotIndex) : name;
+    }
+
+    @PluginMethod
+    public void getPluginVersion(final PluginCall call) {
+        try {
+            final JSObject ret = new JSObject();
+            ret.put("version", this.PLUGIN_VERSION);
+            call.resolve(ret);
+        } catch (final Exception e) {
+            call.reject("Could not get plugin version", e);
+        }
     }
 }

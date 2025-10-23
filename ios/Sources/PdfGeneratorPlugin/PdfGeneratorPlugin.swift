@@ -4,11 +4,13 @@ import WebKit
 
 @objc(PdfGeneratorPlugin)
 public class PdfGeneratorPlugin: CAPPlugin, CAPBridgedPlugin {
+    private let PLUGIN_VERSION: String = ""
     public let identifier = "PdfGeneratorPlugin"
     public let jsName = "PdfGenerator"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "fromURL", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "fromData", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getPluginVersion", returnType: CAPPluginReturnPromise)
     ]
 
     private var tasks: [PdfGenerationTask] = []
@@ -58,7 +60,7 @@ public class PdfGeneratorPlugin: CAPPlugin, CAPBridgedPlugin {
         DispatchQueue.main.async {
             task.call.resolve([
                 "type": "base64",
-                "base64": base64,
+                "base64": base64
             ])
             task.finish()
         }
@@ -90,7 +92,7 @@ public class PdfGeneratorPlugin: CAPPlugin, CAPBridgedPlugin {
                 } else {
                     task.call.resolve([
                         "type": "share",
-                        "completed": completed,
+                        "completed": completed
                     ])
                 }
                 try? FileManager.default.removeItem(at: temporaryURL)
@@ -289,4 +291,9 @@ private struct PdfGeneratorOptions {
         }
         return URL(string: raw)
     }
+
+    @objc func getPluginVersion(_ call: CAPPluginCall) {
+        call.resolve(["version": self.PLUGIN_VERSION])
+    }
+
 }

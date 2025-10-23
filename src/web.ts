@@ -15,4 +15,8 @@ export class PdfGeneratorWeb extends WebPlugin implements PdfGeneratorPlugin {
   async fromData(_options: PdfGeneratorFromDataOptions): Promise<PdfGeneratorResult> {
     throw this.unimplemented('fromData is not available in the web implementation.');
   }
+
+  async getPluginVersion(): Promise<{ version: string }> {
+    return { version: 'web' };
+  }
 }

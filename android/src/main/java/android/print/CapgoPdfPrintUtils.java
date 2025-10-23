@@ -28,34 +28,27 @@ public final class CapgoPdfPrintUtils {
         void onError(@NonNull String message);
     }
 
-    public static void createBase64(
-        Context context,
-        PrintDocumentAdapter adapter,
-        PrintAttributes attributes,
-        Base64Callback callback
-    ) {
+    public static void createBase64(Context context, PrintDocumentAdapter adapter, PrintAttributes attributes, Base64Callback callback) {
         Writer writer = new Writer(adapter, attributes);
         writer.writeToTempFile(
             context,
             new Writer.FileResultCallback() {
                 @Override
                 public void onSuccess(@NonNull File file, @NonNull ParcelFileDescriptor descriptor) {
-                    new Thread(
-                        () -> {
-                            try {
-                                String base64 = PdfIoUtils.readBase64(file);
-                                callback.onSuccess(base64);
-                            } catch (Exception ex) {
-                                callback.onError("Failed to convert PDF to base64.");
-                            } finally {
-                                PdfIoUtils.closeQuietly(descriptor);
-                                // best-effort cleanup
-                                //noinspection ResultOfMethodCallIgnored
-                                file.delete();
-                            }
+                    new Thread(() -> {
+                        try {
+                            String base64 = PdfIoUtils.readBase64(file);
+                            callback.onSuccess(base64);
+                        } catch (Exception ex) {
+                            callback.onError("Failed to convert PDF to base64.");
+                        } finally {
+                            PdfIoUtils.closeQuietly(descriptor);
+                            // best-effort cleanup
+                            //noinspection ResultOfMethodCallIgnored
+                            file.delete();
                         }
-                    )
-                    .start();
+                    })
+                        .start();
                 }
 
                 @Override
