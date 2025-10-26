@@ -11,6 +11,10 @@ Generate PDF files from HTML strings or remote URLs.
 
 Port of the Cordova [pdf-generator](https://github.com/feedhenry-staff/pdf-generator) plugin for Capacitor with a modernized native implementation.
 
+## Documentation
+
+The most complete doc is available here: https://capgo.app/docs/plugins/pdf-generator/
+
 ## Install
 
 ```bash
