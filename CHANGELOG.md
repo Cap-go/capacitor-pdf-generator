@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [7.1.5](https://github.com/Cap-go/capacitor-pdf-generator/compare/7.1.4...7.1.5) (2025-10-27)
+
+
+### Bug Fixes
+
+* renovate capacitor dep ([6ab905b](https://github.com/Cap-go/capacitor-pdf-generator/commit/6ab905b6cae5e06b14a6919690c9ff4cd3be9d95))
+
 ## [7.1.4](https://github.com/Cap-go/capacitor-pdf-generator/compare/7.1.3...7.1.4) (2025-10-27)
 
 
