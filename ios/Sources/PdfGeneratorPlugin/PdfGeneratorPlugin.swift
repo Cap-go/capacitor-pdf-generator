@@ -108,6 +108,10 @@ public class PdfGeneratorPlugin: CAPPlugin, CAPBridgedPlugin {
             presenter.present(activity, animated: true)
         }
     }
+
+    @objc func getPluginVersion(_ call: CAPPluginCall) {
+        call.resolve(["version": self.PLUGIN_VERSION])
+    }
 }
 
 private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
@@ -291,9 +295,4 @@ private struct PdfGeneratorOptions {
         }
         return URL(string: raw)
     }
-
-    @objc func getPluginVersion(_ call: CAPPluginCall) {
-        call.resolve(["version": self.PLUGIN_VERSION])
-    }
-
 }
