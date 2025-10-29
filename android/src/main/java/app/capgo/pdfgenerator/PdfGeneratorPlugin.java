@@ -168,6 +168,17 @@ public class PdfGeneratorPlugin extends Plugin {
         builder.setMinMargins(PrintAttributes.Margins.NO_MARGINS);
         return builder.build();
     }
+
+    @PluginMethod
+    public void getPluginVersion(final PluginCall call) {
+        try {
+            final JSObject ret = new JSObject();
+            ret.put("version", this.PLUGIN_VERSION);
+            call.resolve(ret);
+        } catch (final Exception e) {
+            call.reject("Could not get plugin version", e);
+        }
+    }
 }
 
 interface PdfSource {
@@ -365,16 +376,5 @@ final class PdfGeneratorOptions {
         String name = fileName;
         int dotIndex = name.lastIndexOf('.');
         return dotIndex > 0 ? name.substring(0, dotIndex) : name;
-    }
-
-    @PluginMethod
-    public void getPluginVersion(final PluginCall call) {
-        try {
-            final JSObject ret = new JSObject();
-            ret.put("version", this.PLUGIN_VERSION);
-            call.resolve(ret);
-        } catch (final Exception e) {
-            call.reject("Could not get plugin version", e);
-        }
     }
 }
