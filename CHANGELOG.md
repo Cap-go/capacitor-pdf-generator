@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [7.2.0](https://github.com/Cap-go/capacitor-pdf-generator/compare/7.1.6...7.2.0) (2025-10-29)
+
+
+### Features
+
+* add getPluginVersion method to return plugin version ([7d9e6cc](https://github.com/Cap-go/capacitor-pdf-generator/commit/7d9e6ccc90f1a55865388f5d90ad8932ce31f49f))
+* implement getPluginVersion method to retrieve plugin version ([af6feb7](https://github.com/Cap-go/capacitor-pdf-generator/commit/af6feb768cd0f58ebfac5e46863385726e49246c))
+
 ## [7.1.6](https://github.com/Cap-go/capacitor-pdf-generator/compare/7.1.5...7.1.6) (2025-10-29)
 
 
