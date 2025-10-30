@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [7.2.1](https://github.com/Cap-go/capacitor-pdf-generator/compare/7.2.0...7.2.1) (2025-10-30)
+
+
+### Bug Fixes
+
+* pluginVersion lint issue ([125fb71](https://github.com/Cap-go/capacitor-pdf-generator/commit/125fb715342c4ab85c72f210161f4ff4afa8dde7))
+
 ## [7.2.0](https://github.com/Cap-go/capacitor-pdf-generator/compare/7.1.6...7.2.0) (2025-10-29)
 
 
