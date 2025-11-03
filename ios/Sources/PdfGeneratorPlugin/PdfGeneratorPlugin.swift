@@ -4,7 +4,7 @@ import WebKit
 
 @objc(PdfGeneratorPlugin)
 public class PdfGeneratorPlugin: CAPPlugin, CAPBridgedPlugin {
-    private let pluginVersion: String = "7.2.1"
+    private let pluginVersion: String = "7.2.2"
     public let identifier = "PdfGeneratorPlugin"
     public let jsName = "PdfGenerator"
     public let pluginMethods: [CAPPluginMethod] = [
