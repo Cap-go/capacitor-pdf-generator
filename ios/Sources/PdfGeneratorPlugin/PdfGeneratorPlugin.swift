@@ -125,7 +125,7 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
 
     private weak var plugin: PdfGeneratorPlugin?
     private let source: Source
-    private let webView: WKWebView
+    private var webView: WKWebView?
     private var didFinish = false
 
     init(plugin: PdfGeneratorPlugin, call: CAPPluginCall, source: Source, options: PdfGeneratorOptions) {
@@ -133,21 +133,24 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
         self.call = call
         self.source = source
         self.options = options
-        let configuration = WKWebViewConfiguration()
-        configuration.preferences.javaScriptEnabled = true
-        self.webView = WKWebView(frame: .zero, configuration: configuration)
         super.init()
-        self.webView.navigationDelegate = self
     }
 
     func start() {
         DispatchQueue.main.async {
+            // Create WKWebView on main thread
+            let configuration = WKWebViewConfiguration()
+            configuration.preferences.javaScriptEnabled = true
+            let webView = WKWebView(frame: .zero, configuration: configuration)
+            webView.navigationDelegate = self
+            self.webView = webView
+            
             switch self.source {
             case let .url(url):
                 let request = URLRequest(url: url)
-                self.webView.load(request)
+                webView.load(request)
             case let .html(html, baseUrl):
-                self.webView.loadHTMLString(html, baseURL: baseUrl)
+                webView.loadHTMLString(html, baseURL: baseUrl)
             }
         }
     }
@@ -160,9 +163,9 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
 
     private func cleanup() {
         DispatchQueue.main.async {
-            self.webView.stopLoading()
-            self.webView.navigationDelegate = nil
-            self.webView.removeFromSuperview()
+            self.webView?.stopLoading()
+            self.webView?.navigationDelegate = nil
+            self.webView?.removeFromSuperview()
         }
         plugin?.taskDidComplete(self)
     }
@@ -189,6 +192,11 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
     }
 
     private func generatePdf() {
+        guard let webView = self.webView else {
+            fail(with: "WebView not initialized")
+            return
+        }
+        
         let configuration = WKPDFConfiguration()
         configuration.rect = CGRect(origin: .zero, size: options.pageSize)
 
