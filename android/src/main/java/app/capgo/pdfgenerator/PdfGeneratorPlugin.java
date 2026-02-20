@@ -29,7 +29,7 @@ import java.util.Locale;
 @CapacitorPlugin(name = "PdfGenerator")
 public class PdfGeneratorPlugin extends Plugin {
 
-    private final String pluginVersion = "8.0.15";
+    private final String pluginVersion = "8.0.16";
 
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final List<PdfGenerationTask> tasks = new ArrayList<>();
