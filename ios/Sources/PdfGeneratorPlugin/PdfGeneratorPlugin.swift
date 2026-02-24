@@ -198,51 +198,46 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
             return
         }
         
-        // Get print formatter on main thread (required for WebKit)
+        // All UIKit/UIGraphics operations must be on main thread
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            let printFormatter = webView.viewPrintFormatter()
-            let pageSize = self.options.pageSize
             
-            // Move rendering to background queue to avoid blocking UI
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                guard let self else { return }
-                
-                // Use UIPrintPageRenderer for proper multi-page PDF generation
-                let renderer = UIPrintPageRenderer()
-                
-                // Set up page size (A4 or A3) and printable area
-                let pageRect = CGRect(origin: .zero, size: pageSize)
-                
-                // Define printable area with margins (20 points on each side)
-                let printableRect = pageRect.insetBy(dx: 20.0, dy: 20.0)
-                
-                // Note: paperRect and printableRect are read-only properties, 
-                // so we must use KVC to set them for custom PDF generation
-                renderer.setValue(pageRect, forKey: "paperRect")
-                renderer.setValue(printableRect, forKey: "printableRect")
-                
-                // Add the web view's print formatter to the renderer
-                renderer.addPrintFormatter(printFormatter, startingAtPageAt: 0)
-                
-                // Prepare the renderer for drawing
-                renderer.prepare(forDrawingPages: NSRange(location: 0, length: renderer.numberOfPages))
-                
-                // Create PDF data using UIGraphics context
-                let pdfData = NSMutableData()
-                UIGraphicsBeginPDFContextToData(pdfData, pageRect, nil)
-                
-                for pageIndex in 0..<renderer.numberOfPages {
-                    UIGraphicsBeginPDFPage()
-                    let bounds = UIGraphicsGetPDFContextBounds()
-                    renderer.drawPage(at: pageIndex, in: bounds)
-                }
-                
-                UIGraphicsEndPDFContext()
-                
-                // Handle the generated PDF
-                self.plugin?.handle(pdfData: pdfData as Data, for: self)
+            // Use UIPrintPageRenderer for proper multi-page PDF generation
+            let printFormatter = webView.viewPrintFormatter()
+            let renderer = UIPrintPageRenderer()
+            
+            // Set up page size (A4 or A3) and printable area
+            let pageSize = self.options.pageSize
+            let pageRect = CGRect(origin: .zero, size: pageSize)
+            
+            // Define printable area with margins (20 points on each side)
+            let printableRect = pageRect.insetBy(dx: 20.0, dy: 20.0)
+            
+            // Note: paperRect and printableRect are read-only properties, 
+            // so we must use KVC to set them for custom PDF generation
+            renderer.setValue(pageRect, forKey: "paperRect")
+            renderer.setValue(printableRect, forKey: "printableRect")
+            
+            // Add the web view's print formatter to the renderer
+            renderer.addPrintFormatter(printFormatter, startingAtPageAt: 0)
+            
+            // Prepare the renderer for drawing
+            renderer.prepare(forDrawingPages: NSRange(location: 0, length: renderer.numberOfPages))
+            
+            // Create PDF data using UIGraphics context (must be on main thread)
+            let pdfData = NSMutableData()
+            UIGraphicsBeginPDFContextToData(pdfData, pageRect, nil)
+            
+            for pageIndex in 0..<renderer.numberOfPages {
+                UIGraphicsBeginPDFPage()
+                let bounds = UIGraphicsGetPDFContextBounds()
+                renderer.drawPage(at: pageIndex, in: bounds)
             }
+            
+            UIGraphicsEndPDFContext()
+            
+            // Handle the generated PDF
+            self.plugin?.handle(pdfData: pdfData as Data, for: self)
         }
     }
 }
