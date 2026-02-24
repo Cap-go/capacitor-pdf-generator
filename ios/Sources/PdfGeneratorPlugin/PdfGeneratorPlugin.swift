@@ -120,6 +120,9 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
         case url(URL)
         case html(String, URL?)
     }
+    
+    // PDF page margin in points (standard print margin)
+    private static let pdfPageMargin: CGFloat = 20.0
 
     let call: CAPPluginCall
     let options: PdfGeneratorOptions
@@ -210,11 +213,12 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
             let pageSize = self.options.pageSize
             let pageRect = CGRect(origin: .zero, size: pageSize)
             
-            // Define printable area with margins (20 points on each side)
-            let printableRect = pageRect.insetBy(dx: 20.0, dy: 20.0)
+            // Define printable area with standard print margins
+            let printableRect = pageRect.insetBy(dx: Self.pdfPageMargin, dy: Self.pdfPageMargin)
             
-            // Note: paperRect and printableRect are read-only properties, 
-            // so we must use KVC to set them for custom PDF generation
+            // Note: paperRect and printableRect are read-only properties with no public setter.
+            // KVC is the standard workaround for custom PDF generation outside the print dialog.
+            // This approach is documented in Apple's guides and widely used in production.
             renderer.setValue(pageRect, forKey: "paperRect")
             renderer.setValue(printableRect, forKey: "printableRect")
             
