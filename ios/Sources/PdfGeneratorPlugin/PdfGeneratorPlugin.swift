@@ -1,5 +1,6 @@
 import Capacitor
 import Foundation
+import UIKit
 import WebKit
 
 @objc(PdfGeneratorPlugin)
@@ -197,17 +198,44 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
             return
         }
         
-        let configuration = WKPDFConfiguration()
-        configuration.rect = CGRect(origin: .zero, size: options.pageSize)
-
-        webView.createPDF(configuration: configuration) { [weak self] result in
+        DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            switch result {
-            case let .success(data):
-                self.plugin?.handle(pdfData: data, for: self)
-            case let .failure(error):
-                self.fail(with: "Failed to generate PDF: \(error.localizedDescription)")
+            
+            // Use UIPrintPageRenderer for proper multi-page PDF generation
+            let printFormatter = webView.viewPrintFormatter()
+            let renderer = UIPrintPageRenderer()
+            
+            // Set up page size (A4 or A3) and printable area
+            let pageSize = self.options.pageSize
+            let pageRect = CGRect(origin: .zero, size: pageSize)
+            
+            // Define printable area with margins (20 points on each side)
+            let printableRect = pageRect.insetBy(dx: 20.0, dy: 20.0)
+            
+            renderer.setValue(pageRect, forKey: "paperRect")
+            renderer.setValue(printableRect, forKey: "printableRect")
+            
+            // Add the web view's print formatter to the renderer
+            renderer.addPrintFormatter(printFormatter, startingAtPageAt: 0)
+            
+            // Prepare the renderer for drawing
+            renderer.prepare(forDrawingPages: NSRange(location: 0, length: renderer.numberOfPages))
+            
+            // Create PDF data using UIGraphics context
+            let pdfData = NSMutableData()
+            UIGraphicsBeginPDFContextToData(pdfData, pageRect, nil)
+            
+            for pageIndex in 0..<renderer.numberOfPages {
+                UIGraphicsBeginPDFPage()
+                let bounds = UIGraphicsGetPDFContextBounds()
+                renderer.drawPage(at: pageIndex, in: bounds)
             }
+            
+            UIGraphicsEndPDFContext()
+            
+            // Convert NSMutableData to Data and handle it
+            let finalData = pdfData as Data
+            self.plugin?.handle(pdfData: finalData, for: self)
         }
     }
 }
