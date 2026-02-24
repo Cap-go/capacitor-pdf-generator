@@ -224,6 +224,12 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
             // Prepare the renderer for drawing
             renderer.prepare(forDrawingPages: NSRange(location: 0, length: renderer.numberOfPages))
             
+            // Check if we have any pages to render
+            guard renderer.numberOfPages > 0 else {
+                self.fail(with: "No content to generate PDF from")
+                return
+            }
+            
             // Create PDF data using UIGraphics context (must be on main thread)
             let pdfData = NSMutableData()
             UIGraphicsBeginPDFContextToData(pdfData, pageRect, nil)
