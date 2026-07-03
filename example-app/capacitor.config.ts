@@ -4,7 +4,7 @@ import pkg from './package.json';
 
 const config: CapacitorConfig = {
   appId: 'app.capgo.pdfgenerator',
-  appName: 'PDF Generator Example',
+  appName: '@capgo/capacitor-pdf-generator',
   webDir: 'dist',
   plugins: {
     SplashScreen: {
