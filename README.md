@@ -1,11 +1,27 @@
 # @capgo/capacitor-pdf-generator
-<a href="https://capgo.app/"><img src="https://capgo.app/readme-banner.svg?repo=Cap-go/capacitor-pdf-generator" alt="Capgo - Instant updates for Capacitor" /></a>
+
+Create PDF files from HTML strings or web pages in your Capacitor app, then return them as base64 or open the share sheet. A modern port of the Cordova pdf-generator plugin.
+
+<a href="https://capgo.app/?ref=plugin_pdf_generator"><img src="https://capgo.app/readme-banner.svg?repo=Cap-go/capacitor-pdf-generator" alt="Capgo - Instant updates for Capacitor" /></a>
 
 <div align="center">
-  <h2><a href="https://capgo.app/?ref=plugin_pdf_generator"> ➡️ Get Instant updates for your App with Capgo</a></h2>
-  <h2><a href="https://capgo.app/consulting/?ref=plugin_pdf_generator"> Missing a feature? We’ll build the plugin for you 💪</a></h2>
+  <p><b>Capgo</b>: open-source live updates for Ionic and Capacitor apps. Ship OTA fixes and features instantly, without waiting for app store review.</p>
+  <h2><a href="https://capgo.app/register/?ref=plugin_pdf_generator">➡️ Get started for free</a></h2>
+  <p>14-day unlimited free trial. No credit card required</p>
+  <p><a href="https://capgo.app/consulting/?ref=plugin_pdf_generator">Missing a feature? We'll build the plugin for you 💪</a></p>
 </div>
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Cap-go/capacitor-pdf-generator/main/assets/github-social-preview.png" alt="@capgo/capacitor-pdf-generator for Capacitor apps" width="300" />
+</p>
+
+## Key features
+
+- **From HTML**: `fromData()` renders an HTML string to PDF.
+- **From a URL**: `fromURL()` renders a remote page to PDF.
+- **Output**: get `base64` data or open the native share dialog with a file name.
+- **Layout**: A3 or A4 pages in portrait or landscape.
+- **Platforms**: iOS and Android. Rendered with the native WebView on each platform. Not available on web.
 
 Generate PDF files from HTML strings or remote URLs.
 
