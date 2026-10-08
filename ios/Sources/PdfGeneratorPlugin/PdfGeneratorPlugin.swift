@@ -115,6 +115,25 @@ public class PdfGeneratorPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 }
 
+private final class CustomPrintPageRenderer: UIPrintPageRenderer {
+    private let customPaperRect: CGRect
+    private let customPrintableRect: CGRect
+
+    init(paperRect: CGRect, printableRect: CGRect) {
+        self.customPaperRect = paperRect
+        self.customPrintableRect = printableRect
+        super.init()
+    }
+
+    override var paperRect: CGRect {
+        customPaperRect
+    }
+
+    override var printableRect: CGRect {
+        customPrintableRect
+    }
+}
+
 private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
     enum Source {
         case url(URL)
@@ -207,7 +226,6 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
             
             // Use UIPrintPageRenderer for proper multi-page PDF generation
             let printFormatter = webView.viewPrintFormatter()
-            let renderer = UIPrintPageRenderer()
             
             // Set up page size (A4 or A3) and printable area
             let pageSize = self.options.pageSize
@@ -216,11 +234,7 @@ private final class PdfGenerationTask: NSObject, WKNavigationDelegate {
             // Define printable area with standard print margins
             let printableRect = pageRect.insetBy(dx: Self.pdfPageMargin, dy: Self.pdfPageMargin)
             
-            // Note: paperRect and printableRect are read-only properties with no public setter.
-            // KVC is the standard workaround for custom PDF generation outside the print dialog.
-            // This approach is documented in Apple's guides and widely used in production.
-            renderer.setValue(pageRect, forKey: "paperRect")
-            renderer.setValue(printableRect, forKey: "printableRect")
+            let renderer = CustomPrintPageRenderer(paperRect: pageRect, printableRect: printableRect)
             
             // Add the web view's print formatter to the renderer
             renderer.addPrintFormatter(printFormatter, startingAtPageAt: 0)
