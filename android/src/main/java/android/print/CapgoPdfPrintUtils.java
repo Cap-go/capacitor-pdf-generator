@@ -47,8 +47,7 @@ public final class CapgoPdfPrintUtils {
                             //noinspection ResultOfMethodCallIgnored
                             file.delete();
                         }
-                    })
-                        .start();
+                    }).start();
                 }
 
                 @Override
